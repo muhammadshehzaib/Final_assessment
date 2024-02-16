@@ -56,7 +56,7 @@ const Header = ({ showMobmenu }) => {
         <Nav className="me-auto" navbar>
           <NavItem>
             <Link href="/" className="nav-link">
-              Starter
+              Home
             </Link>
           </NavItem>
           <NavItem>

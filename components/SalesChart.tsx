@@ -1,19 +1,80 @@
-'use client'
+"use client";
 import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const SalesChart = () => {
+  const [countriesData, setCountriesData] = useState([]);
+  const [languagesData, setLanguagesData] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3009/news");
+      if (!response.ok) {
+        throw new Error("Failed to fetch blog data");
+      }
+      const data = await response.json();
+
+      setCountriesData(data);
+
+      // console.log("data : ", data);
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await fetch("http://localhost:3009/news");
+      if (!response.ok) {
+        throw new Error("Failed to fetch blog data");
+      }
+      const data = await response.json();
+
+      setLanguagesData(data);
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    fetchLanguages();
+  }, []);
+
+  // domain_rank;
+  // replies_count;
+
+  // countriesData.map((country) => {
+  //   console.log("This is replies count : " + country.replies_count.length);
+  // });
+
+  // // console.log("-------------------");
+
+  // languagesData.map((language) => {
+  //   console.log("This is domain rank : " + language.domain_rank.length);
+  // });
+
+  // console.log("-------------------");
+
   const chartoptions = {
     series: [
       {
-        name: "Iphone 13",
-        data: [0, 31, 40, 28, 51, 42, 109, 100],
+        name: "Participants Count",
+        data: languagesData.map((language) => {
+          // console.log("This is Participants  : " + language.domain_rank);
+          return language.participants;
+        }),
       },
       {
-        name: "Oneplue 9",
-        data: [0, 11, 32, 45, 32, 34, 52, 41],
+        name: "Replies Count",
+        data: countriesData.map((country) => {
+          // console.log("This is replies count : " + country.replies_count);
+          return country.replies_count;
+        }),
       },
     ],
     options: {
@@ -47,21 +108,29 @@ const SalesChart = () => {
     },
   };
   return (
-    <Card>
-      <CardBody>
-        <CardTitle tag="h5">Sales Summary</CardTitle>
-        <CardSubtitle className="text-muted" tag="h6">
-          Yearly Sales Report
-        </CardSubtitle>
-        <Chart
-          type="area"
-          width="100%"
-          height="390"
-          options={chartoptions.options}
-          series={chartoptions.series}
-        />
-      </CardBody>
-    </Card>
+    <div>
+      <Link
+        href="/graph"
+        className="nav-link text-black font-extrabold text-3xl"
+      >
+        Click Here to See Another Graph
+      </Link>
+      <Card>
+        <CardBody>
+          <CardTitle tag="h5">Sales Summary</CardTitle>
+          <CardSubtitle className="text-muted" tag="h6">
+            Yearly Sales Report
+          </CardSubtitle>
+          <Chart
+            type="area"
+            width="100%"
+            height="390"
+            options={chartoptions.options}
+            series={chartoptions.series}
+          />
+        </CardBody>
+      </Card>
+    </div>
   );
 };
 
