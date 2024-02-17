@@ -4,8 +4,8 @@ import { Col, Row } from "reactstrap";
 
 const page = () => {
   return (
-    <Row className="flex justify-center mt-28">
-      <Col sm="12" lg="6" xl="7" xxl="8">
+    <Row className="flex justify-center mt-28 ml-6">
+      <Col sm="12" lg="12" xl="12" xxl="12">
         <SalesChart2 />
       </Col>
     </Row>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -8,9 +8,10 @@ import {
   Button,
 } from "reactstrap";
 import PropTypes from "prop-types";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface BlogProps {
+  id: string;
   title: string;
   image: string;
   subtitle: string;
@@ -18,7 +19,22 @@ interface BlogProps {
   color: string;
 }
 
-const Blog: React.FC<BlogProps> = ({ image, title, subtitle, text, color }) => {
+const Blog: React.FC<BlogProps> = ({
+  id,
+  image,
+  title,
+  subtitle,
+  text,
+  color,
+}) => {
+  const router = useRouter();
+
+  const handleReadMoreClick = () => {
+    // Now you can use the 'id' in whatever way you need
+    console.log(`Read More clicked for post with id: ${id}`);
+    router.push(`/blogs/${id}`);
+  };
+
   return (
     <Card>
       <div style={{ position: "relative", width: "100%", height: "200px" }}>
@@ -50,7 +66,11 @@ const Blog: React.FC<BlogProps> = ({ image, title, subtitle, text, color }) => {
             {text.length < 80 ? `${text}` : `${text.substring(0, 32)} ...`}
           </small>{" "}
         </CardText>
-        <Button color={"primary"} className="btn-sm my-2">
+        <Button
+          color={"primary"}
+          className="btn-sm my-2 "
+          onClick={handleReadMoreClick}
+        >
           Read More
         </Button>
       </CardBody>
@@ -59,7 +79,7 @@ const Blog: React.FC<BlogProps> = ({ image, title, subtitle, text, color }) => {
 };
 
 Blog.propTypes = {
-  title: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   image: PropTypes.any.isRequired,
   subtitle: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,

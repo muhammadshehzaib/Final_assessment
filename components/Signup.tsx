@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Navigation from "./Header";
 // import Header from "./Header";
 // import Footer from "./Footer";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignUp() {
   const router = useRouter();
@@ -42,10 +44,17 @@ function SignUp() {
       }
 
       const responseData = await response.json();
+      toast.success("User Created successful");
       router.push("signin");
       console.log("Signup Successful:", responseData);
     } catch (error: any) {
+      console.error("Failed to authenticate user:", error);
       console.error("Signup Failed:", error.message);
+      if (error.response && error.response.status === 401) {
+        toast.error("Invalid username or password");
+      } else {
+        toast.error("An unexpected error occurred. Please try again later.");
+      }
     }
   };
   return (
@@ -150,6 +159,7 @@ function SignUp() {
                 </button>
               </div>
             </form>
+            <ToastContainer />
           </div>
         </div>
       </div>

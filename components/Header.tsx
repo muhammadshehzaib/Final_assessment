@@ -17,14 +17,25 @@ import {
 } from "reactstrap";
 import LogoWhite from "../public/assets/images/logos/xtremelogowhite.svg";
 import user1 from "../public/assets/images/users/user1.jpg";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const Header = ({ showMobmenu }) => {
+  const router = useRouter();
+  const { isAuthenticated, token, logout } = useAuth();
+
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const Handletoggle = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    // Simulate a logout action
+    logout();
+    router.push("signin");
   };
 
   return (
@@ -95,7 +106,7 @@ const Header = ({ showMobmenu }) => {
             <DropdownItem divider />
             <DropdownItem>My Balance</DropdownItem>
             <DropdownItem>Inbox</DropdownItem>
-            <DropdownItem>Logout</DropdownItem>
+            <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Collapse>

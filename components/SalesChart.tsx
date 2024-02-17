@@ -45,21 +45,6 @@ const SalesChart = () => {
     fetchLanguages();
   }, []);
 
-  // domain_rank;
-  // replies_count;
-
-  // countriesData.map((country) => {
-  //   console.log("This is replies count : " + country.replies_count.length);
-  // });
-
-  // // console.log("-------------------");
-
-  // languagesData.map((language) => {
-  //   console.log("This is domain rank : " + language.domain_rank.length);
-  // });
-
-  // console.log("-------------------");
-
   const chartoptions = {
     series: [
       {
@@ -113,7 +98,7 @@ const SalesChart = () => {
         href="/graph"
         className="nav-link text-black font-extrabold text-3xl"
       >
-        Click Here to See Another Graph
+        <div className="mb-6"> Click Here to See Another Graph</div>
       </Link>
       <Card>
         <CardBody>
