@@ -9,6 +9,7 @@ import {
 } from "reactstrap";
 import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
+import Image from "../public/assets/images/tree-736885_1280.jpg";
 
 interface BlogProps {
   id: string;
@@ -34,18 +35,12 @@ const Blog: React.FC<BlogProps> = ({
     router.push(`/blogs/${id}`);
   };
 
+  console.log("This is image : " + image);
+
   return (
     <Card>
       <div style={{ position: "relative", width: "100%", height: "200px" }}>
-        <img
-          alt={image}
-          className="h-full"
-          src={
-            image
-              ? image
-              : "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg"
-          }
-        />
+        <img alt={image} className="h-full w-full " src={image || Image.src} />
       </div>
       <CardBody className="p-3">
         <CardTitle tag="h5" className="h-10 overflow-hidden">

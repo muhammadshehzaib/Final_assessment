@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import Navigation from "./Header";
-// import Footer from "./Footer";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 function SignIn() {
   const router = useRouter();
@@ -37,26 +37,35 @@ function SignIn() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Signup Failed:", errorData);
+        toast.error("Invalid username or password");
         return;
       }
 
       const responseData = await response.json();
+      toast.success("User Login successful");
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
       console.log(responseData.accessToken);
       login(responseData.accessToken);
       if (isAuthenticated) {
         router.push("/");
       }
-
-      // console.log("Signup Successful:", responseData);
     } catch (error: any) {
-      console.error("Signup Failed:", error.message);
+      console.error("Failed to authenticate user:", error);
+      console.error("Signin Failed:", error.message);
+      if (error.response && error.response.status === 401) {
+        toast.error("Invalid username or password");
+      } else {
+        toast.error("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
   return (
     <>
       {/* <Navigation /> */}
-      <div className="flex min-h-[38.5rem] flex-col justify-center px-6 py-12 lg:px-8 bg-gray-100 dark:bg-gray-800">
+      <div className="flex min-h-[38.5rem] flex-col justify-center px-6 py-12 lg:px-8 bg-white dark:bg-gray-800">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-10 text-center text-3xl font-bold leading-9 text-gray-900 dark:text-white">
             Sign in to your account
@@ -79,7 +88,7 @@ function SignIn() {
                   type="text"
                   autoComplete="username"
                   required
-                  className="block w-full rounded-md border-0 p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm"
+                  className="block w-full rounded-md p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm border border-black"
                   onChange={handleInputChange}
                 />
               </div>
@@ -109,7 +118,7 @@ function SignIn() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="block w-full rounded-md border-0 p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm"
+                  className="block w-full rounded-md p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm border border-black"
                   onChange={handleInputChange}
                 />
               </div>
@@ -136,7 +145,7 @@ function SignIn() {
           </p>
         </div>
       </div>
-      {/* <Footer /> */}
+      <ToastContainer />
     </>
   );
 }

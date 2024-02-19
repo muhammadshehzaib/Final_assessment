@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import Giphy from "../public/assets/images/giphy2.gif";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -14,6 +15,7 @@ interface CountryData {
 
 const SalesChart: React.FC = () => {
   const [countriesData, setCountriesData] = useState<CountryData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchData = async () => {
     try {
@@ -25,6 +27,8 @@ const SalesChart: React.FC = () => {
       setCountriesData(data);
     } catch (error: any) {
       console.error(error.message);
+    } finally {
+      setLoading(false); // Set loading to false regardless of success or failure
     }
   };
 
@@ -96,13 +100,19 @@ const SalesChart: React.FC = () => {
           <CardSubtitle className="text-muted" tag="h6">
             Yearly Sales Report
           </CardSubtitle>
-          <Chart
-            type="area"
-            width="100%"
-            height="390"
-            options={chartoptions.options}
-            series={chartoptions.series}
-          />
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <img src={Giphy.src} alt="" />
+            </div>
+          ) : (
+            <Chart
+              type="area"
+              width="100%"
+              height="390"
+              options={chartoptions.options}
+              series={chartoptions.series}
+            />
+          )}
         </CardBody>
       </Card>
     </div>

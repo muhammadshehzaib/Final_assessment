@@ -1,11 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Navigation from "./Header";
-// import Header from "./Header";
-// import Footer from "./Footer";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 function SignUp() {
   const router = useRouter();
@@ -40,12 +37,15 @@ function SignUp() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Signup Failed:", errorData);
+        toast.error("Invalid username or password");
         return;
       }
 
       const responseData = await response.json();
       toast.success("User Created successful");
-      router.push("signin");
+      setTimeout(() => {
+        router.push("signin");
+      }, 1000);
       console.log("Signup Successful:", responseData);
     } catch (error: any) {
       console.error("Failed to authenticate user:", error);
@@ -60,7 +60,7 @@ function SignUp() {
   return (
     <>
       {/* <Header /> */}
-      <div className="min-h-[38.5rem] bg-gray-100 dark:bg-gray-800">
+      <div className="min-h-[38.5rem]  dark:bg-gray-800 bg-white">
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <h2 className="mt-10 text-center text-3xl font-bold leading-9 text-gray-900 dark:text-white">
@@ -84,7 +84,7 @@ function SignUp() {
                     type="text"
                     autoComplete="username"
                     required
-                    className="block w-full rounded-md border-0 p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm"
+                    className="block w-full rounded-md  p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm border border-black"
                     onChange={handleInputChange}
                   />
                 </div>
@@ -104,7 +104,7 @@ function SignUp() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full rounded-md border-0 p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm"
+                    className="block w-full rounded-md p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm border border-black"
                     onChange={handleInputChange}
                   />
                 </div>
@@ -134,7 +134,7 @@ function SignUp() {
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="block w-full rounded-md border-0 p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm"
+                    className="block w-full rounded-md  p-2 text-black shadow-sm focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm border border-black"
                     onChange={handleInputChange}
                   />
                 </div>
@@ -159,11 +159,10 @@ function SignUp() {
                 </button>
               </div>
             </form>
-            <ToastContainer />
           </div>
         </div>
       </div>
-      {/* <Footer /> */}
+      <ToastContainer />
     </>
   );
 }
