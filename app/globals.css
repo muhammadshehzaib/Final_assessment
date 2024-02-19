@@ -37,6 +37,7 @@ body {
 
 .contentArea {
   flex-grow: 1;
+  background-color: white;
 }
 
 .wrapper {

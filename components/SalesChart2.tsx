@@ -3,18 +3,15 @@ import { FC, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
 
-// Assuming you have appropriate types for your data and ApexCharts options
 type CountryData = {
   published: string;
   author: string;
-  // Add other properties as needed
 };
 
 type ChartOptions = {
   series: { name: string; data: number[] }[];
   options: {
     xaxis: { categories: string[] };
-    // Add other options as needed
   };
 };
 

@@ -1,5 +1,3 @@
-// Assuming that you have the necessary types for your components and modules
-
 import { useEffect, useState } from "react";
 import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
 import dynamic from "next/dynamic";
@@ -8,18 +6,14 @@ import Link from "next/link";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 interface CountryData {
+  participants: string;
   replies_count: number;
-  // Add other properties as needed
-}
-
-interface LanguageData {
-  participants: number;
+  published: string; // Assuming published is a string
   // Add other properties as needed
 }
 
 const SalesChart: React.FC = () => {
   const [countriesData, setCountriesData] = useState<CountryData[]>([]);
-  const [languagesData, setLanguagesData] = useState<LanguageData[]>([]);
 
   const fetchData = async () => {
     try {
@@ -34,33 +28,37 @@ const SalesChart: React.FC = () => {
     }
   };
 
-  const fetchLanguages = async () => {
-    try {
-      const response = await fetch("http://localhost:3009/news");
-      if (!response.ok) {
-        throw new Error("Failed to fetch blog data");
-      }
-      const data: LanguageData[] = await response.json();
-      setLanguagesData(data);
-    } catch (error: any) {
-      console.error(error.message);
-    }
-  };
-
   useEffect(() => {
     fetchData();
-    fetchLanguages();
   }, []);
+
+  // Aggregate data based on months
+  const aggregatedData: Record<
+    string,
+    { participants: number; replies_count: number }
+  > = {};
+  countriesData.forEach((country) => {
+    const month = new Date(country.published).toLocaleString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "2-digit",
+    });
+    if (!aggregatedData[month]) {
+      aggregatedData[month] = { participants: 0, replies_count: 0 };
+    }
+    aggregatedData[month].participants += parseFloat(country.participants);
+    aggregatedData[month].replies_count += country.replies_count;
+  });
 
   const chartoptions = {
     series: [
       {
         name: "Participants Count",
-        data: languagesData.map((language) => language.participants),
+        data: Object.values(aggregatedData).map((data) => data.participants),
       },
       {
         name: "Replies Count",
-        data: countriesData.map((country) => country.replies_count),
+        data: Object.values(aggregatedData).map((data) => data.replies_count),
       },
     ],
     options: {
@@ -79,16 +77,7 @@ const SalesChart: React.FC = () => {
         width: 1,
       },
       xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "Aug",
-        ],
+        categories: Object.keys(aggregatedData),
       },
     },
   };
@@ -111,7 +100,7 @@ const SalesChart: React.FC = () => {
             type="area"
             width="100%"
             height="390"
-            // options={chartoptions.options}
+            options={chartoptions.options}
             series={chartoptions.series}
           />
         </CardBody>
