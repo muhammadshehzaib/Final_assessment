@@ -54,7 +54,7 @@ export default function RootLayout({
             <Header showMobmenu={() => showMobilemenu()} />
 
             {/********Middle Content**********/}
-            <div className=" max-w-[90%] bg-white">{children}</div>
+            <div className=" max-w-full bg-white">{children}</div>
           </div>
         </div>
       </body>
