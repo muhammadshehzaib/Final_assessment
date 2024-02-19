@@ -31,7 +31,6 @@ const Blog: React.FC<BlogProps> = ({
 
   const handleReadMoreClick = () => {
     // Now you can use the 'id' in whatever way you need
-    console.log(`Read More clicked for post with id: ${id}`);
     router.push(`/blogs/${id}`);
   };
 
@@ -68,7 +67,7 @@ const Blog: React.FC<BlogProps> = ({
         </CardText>
         <Button
           color={"primary"}
-          className="btn-sm my-2 "
+          className="btn-sm my-2 bg-slate-700"
           onClick={handleReadMoreClick}
         >
           Read More

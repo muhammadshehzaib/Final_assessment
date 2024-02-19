@@ -1,5 +1,4 @@
-"use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -20,12 +19,16 @@ import user1 from "../public/assets/images/users/user1.jpg";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
-const Header = ({ showMobmenu }) => {
+interface HeaderProps {
+  showMobmenu: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ showMobmenu }) => {
   const router = useRouter();
   const { isAuthenticated, token, logout } = useAuth();
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const Handletoggle = () => {
@@ -66,12 +69,12 @@ const Header = ({ showMobmenu }) => {
       <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
           <NavItem>
-            <Link href="/" className="nav-link">
+            <Link href="/" passHref className="nav-link">
               Home
             </Link>
           </NavItem>
           <NavItem>
-            <Link href="/about" className="nav-link">
+            <Link href="/about" passHref className="nav-link">
               About
             </Link>
           </NavItem>

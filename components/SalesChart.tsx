@@ -1,14 +1,25 @@
-"use client";
+// Assuming that you have the necessary types for your components and modules
+
+import { useEffect, useState } from "react";
 import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const SalesChart = () => {
-  const [countriesData, setCountriesData] = useState([]);
-  const [languagesData, setLanguagesData] = useState([]);
+interface CountryData {
+  replies_count: number;
+  // Add other properties as needed
+}
+
+interface LanguageData {
+  participants: number;
+  // Add other properties as needed
+}
+
+const SalesChart: React.FC = () => {
+  const [countriesData, setCountriesData] = useState<CountryData[]>([]);
+  const [languagesData, setLanguagesData] = useState<LanguageData[]>([]);
 
   const fetchData = async () => {
     try {
@@ -16,11 +27,8 @@ const SalesChart = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch blog data");
       }
-      const data = await response.json();
-
+      const data: CountryData[] = await response.json();
       setCountriesData(data);
-
-      // console.log("data : ", data);
     } catch (error: any) {
       console.error(error.message);
     }
@@ -32,8 +40,7 @@ const SalesChart = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch blog data");
       }
-      const data = await response.json();
-
+      const data: LanguageData[] = await response.json();
       setLanguagesData(data);
     } catch (error: any) {
       console.error(error.message);
@@ -49,17 +56,11 @@ const SalesChart = () => {
     series: [
       {
         name: "Participants Count",
-        data: languagesData.map((language) => {
-          // console.log("This is Participants  : " + language.domain_rank);
-          return language.participants;
-        }),
+        data: languagesData.map((language) => language.participants),
       },
       {
         name: "Replies Count",
-        data: countriesData.map((country) => {
-          // console.log("This is replies count : " + country.replies_count);
-          return country.replies_count;
-        }),
+        data: countriesData.map((country) => country.replies_count),
       },
     ],
     options: {
@@ -73,7 +74,6 @@ const SalesChart = () => {
         strokeDashArray: 3,
         borderColor: "rgba(0,0,0,0.1)",
       },
-
       stroke: {
         curve: "smooth",
         width: 1,
@@ -92,6 +92,7 @@ const SalesChart = () => {
       },
     },
   };
+
   return (
     <div>
       <Link
@@ -110,7 +111,7 @@ const SalesChart = () => {
             type="area"
             width="100%"
             height="390"
-            options={chartoptions.options}
+            // options={chartoptions.options}
             series={chartoptions.series}
           />
         </CardBody>

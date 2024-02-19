@@ -1,14 +1,35 @@
 import React, { useEffect, useState } from "react";
 
-const BlogId = ({ id }) => {
-  const [news, setNews] = useState([]);
+interface BlogIdProps {
+  id: string; // Adjust the type of 'id' based on your actual data type
+}
+
+interface NewsData {
+  main_img_url: string;
+  title: string;
+  text: string;
+  participants: string;
+  author: string;
+  domain_rank: string;
+}
+
+const BlogId: React.FC<BlogIdProps> = ({ id }) => {
+  const [news, setNews] = useState<NewsData>({
+    main_img_url: "",
+    title: "",
+    text: "",
+    participants: "",
+    author: "",
+    domain_rank: "",
+  });
+
   const fetchData = async () => {
     try {
       const response = await fetch(`http://localhost:3009/news/${id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch blog data");
       }
-      const data = await response.json();
+      const data: NewsData = await response.json();
 
       setNews(data);
     } catch (error: any) {
@@ -18,7 +39,7 @@ const BlogId = ({ id }) => {
 
   useEffect(() => {
     fetchData();
-  });
+  }, [id]); // Include 'id' as a dependency to avoid unnecessary fetches
 
   console.log("This is blog : ", news);
   console.log("This is blogid : ", id);

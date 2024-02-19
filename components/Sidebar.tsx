@@ -1,10 +1,17 @@
+// Use client
 "use client";
 import { Button, Nav, NavItem } from "reactstrap";
 import Logo from "./Logo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const navigation = [
+interface NavigationItem {
+  title: string;
+  href: string;
+  icon: string;
+}
+
+const navigation: NavigationItem[] = [
   {
     title: "Dashboard",
     href: "/",
@@ -57,7 +64,11 @@ const navigation = [
   },
 ];
 
-const Sidebar = ({ showMobilemenu }) => {
+interface SidebarProps {
+  showMobilemenu: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ showMobilemenu }) => {
   return (
     <div className="p-3">
       <div className="flex items-center">
@@ -73,7 +84,7 @@ const Sidebar = ({ showMobilemenu }) => {
         <Nav vertical className="sidebarNav">
           {navigation.map((navi, index) => (
             <NavItem key={index} className="sidenav-bg">
-              <Link href={navi.href} className="">
+              <Link href={navi.href} passHref>
                 <i className={navi.icon}></i>
                 <span className="ms-3 d-inline-block p-2 cursor-pointer">
                   {navi.title}

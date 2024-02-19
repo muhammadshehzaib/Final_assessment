@@ -1,11 +1,27 @@
 "use client";
-import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
+import { FC, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
+
+// Assuming you have appropriate types for your data and ApexCharts options
+type CountryData = {
+  published: string;
+  author: string;
+  // Add other properties as needed
+};
+
+type ChartOptions = {
+  series: { name: string; data: number[] }[];
+  options: {
+    xaxis: { categories: string[] };
+    // Add other options as needed
+  };
+};
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-const SalesChart2 = () => {
-  const [countriesData, setCountriesData] = useState([]);
+
+const SalesChart2: FC = () => {
+  const [countriesData, setCountriesData] = useState<CountryData[]>([]);
 
   const fetchData = async () => {
     try {
@@ -13,7 +29,7 @@ const SalesChart2 = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch blog data");
       }
-      const data = await response.json();
+      const data: CountryData[] = await response.json();
 
       setCountriesData(data);
     } catch (error: any) {
@@ -25,7 +41,6 @@ const SalesChart2 = () => {
     fetchData();
   }, []);
 
-  // Create a mapping to count authors for each date
   const authorsCountByDate = countriesData.reduce((acc, country) => {
     const publishedDate = new Date(country.published);
     const formattedDate = new Intl.DateTimeFormat("en", {
@@ -34,21 +49,20 @@ const SalesChart2 = () => {
     }).format(publishedDate);
 
     if (!acc[formattedDate]) {
-      acc[formattedDate] = new Set();
+      acc[formattedDate] = new Set<string>();
     }
 
     acc[formattedDate].add(country.author);
 
     return acc;
-  }, {});
+  }, {} as Record<string, Set<string>>);
 
   console.log("Authors Count by Date: ", authorsCountByDate);
 
-  // Now you can use authorsCountByDate to update your chart options
-  const chartoptions = {
+  const chartoptions: ChartOptions = {
     series: [
       {
-        name: "Participants Count",
+        name: "Authors",
         data: Object.keys(authorsCountByDate).map(
           (date) => authorsCountByDate[date].size
         ),
@@ -56,10 +70,10 @@ const SalesChart2 = () => {
       // Add other series as needed
     ],
     options: {
-      // ... (your existing options)
       xaxis: {
         categories: Object.keys(authorsCountByDate),
       },
+      // ... (your existing options)
     },
   };
 
