@@ -1,5 +1,4 @@
 "use client";
-
 import useAuth from "@/hooks/useAuth";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
@@ -11,56 +10,48 @@ import ProjectTables from "../components/ProjectTable";
 import SalesChart from "../components/SalesChart";
 import TopCards from "../components/TopCards";
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      item: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
-    }
-  }
+interface News {
+  _id: string;
+  main_img_url: string;
+  title: string;
+  text: string;
+  primary: string;
 }
 
-export default function Home() {
-  const router = useRouter();
+const Home: React.FC = () => {
   const { isAuthenticated, token } = useAuth();
 
-  const [open, setOpen] = useState(false);
-  const [data, setData] = useState([]);
-  const [storedUserDetails, setStoredUserDetails] = useState<string | null>(
-    null
-  );
+  const [data, setData] = useState<News[]>([]);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 1000;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const totalPages: number = 1000;
 
   useEffect(() => {
     if (token) {
       getData(currentPage);
     }
-  }, [currentPage, isAuthenticated]);
+  }, [currentPage, isAuthenticated, token]);
 
-  async function getData(page) {
+  async function getData(page: number) {
     try {
       const res = await fetch(`http://localhost:3009/news/all?page=${page}`);
       if (!res.ok) {
         throw new Error("Failed to fetch data");
       }
-      const data = await res.json();
+      const fetchedData: News[] = await res.json();
 
-      setData(data);
+      setData(fetchedData);
     } catch (error) {
       console.error(error);
     }
   }
 
-  function handlePageChange(page) {
+  function handlePageChange(page: number) {
     setCurrentPage(page);
   }
 
   function renderPageNumbers() {
-    const pageNumbers = [];
+    const pageNumbers: JSX.Element[] = [];
     const maxPageNumbersToShow = 5;
     const halfMaxPageNumbersToShow = Math.floor(maxPageNumbersToShow / 2);
     const firstPageNumber = Math.max(1, currentPage - halfMaxPageNumbersToShow);
@@ -121,7 +112,6 @@ export default function Home() {
                 <Col sm="6" lg="3">
                   <TopCards
                     bg="bg-light-success text-success"
-                    title="Profit"
                     subtitle="Yearly Earning"
                     earning="$21k"
                     icon="bi bi-wallet"
@@ -130,7 +120,6 @@ export default function Home() {
                 <Col sm="6" lg="3">
                   <TopCards
                     bg="bg-light-danger text-danger"
-                    title="Refunds"
                     subtitle="Refund given"
                     earning="$1k"
                     icon="bi bi-coin"
@@ -139,7 +128,6 @@ export default function Home() {
                 <Col sm="6" lg="3">
                   <TopCards
                     bg="bg-light-warning text-warning"
-                    title="New Project"
                     subtitle="Yearly Project"
                     earning="456"
                     icon="bi bi-basket3"
@@ -148,7 +136,6 @@ export default function Home() {
                 <Col sm="6" lg="3">
                   <TopCards
                     bg="bg-light-info text-into"
-                    title="Sales"
                     subtitle="Weekly Sales"
                     earning="210"
                     icon="bi bi-bag"
@@ -171,7 +158,7 @@ export default function Home() {
                 </Col>
               </Row>
               <Row>
-                {data.length != 0
+                {data.length !== 0
                   ? data.map((news) => (
                       <Col sm="6" lg="6" xl="3" key={news.title}>
                         <Blog
@@ -190,9 +177,10 @@ export default function Home() {
                     <ul className="flex items-center  -space-x-px h-10 text-base">
                       <li>
                         <div
-                          className="flex cursor-pointer items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg"
+                          className={`flex cursor-pointer items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg ${
+                            currentPage === 1 ? "cursor-pointer-disabled" : ""
+                          }`}
                           onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
                         >
                           <span className="sr-only">Previous</span>
                           <svg
@@ -215,9 +203,12 @@ export default function Home() {
                       {renderPageNumbers()}
                       <li>
                         <div
-                          className="flex cursor-pointer items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300"
+                          className={`flex cursor-pointer items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 ${
+                            currentPage === totalPages
+                              ? "cursor-pointer-disabled"
+                              : ""
+                          }`}
                           onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
                         >
                           <span className="sr-only">Next</span>
                           <svg
@@ -247,4 +238,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

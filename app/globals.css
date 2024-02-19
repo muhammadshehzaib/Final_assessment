@@ -126,3 +126,9 @@ body {
 .showSidebar {
   margin-left: 0px;
 }
+
+.cursor-pointer-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+
+}
