@@ -1,8 +1,14 @@
-"use client";
+import React from "react";
 import { Card, CardBody } from "reactstrap";
-import PropTypes from "prop-types";
 
-const TopCards = ({ bg, icon, earning, subtitle }) => {
+interface TopCardsProps {
+  bg: string;
+  icon: string;
+  earning: string;
+  subtitle: string;
+}
+
+const TopCards: React.FC<TopCardsProps> = ({ bg, icon, earning, subtitle }) => {
   return (
     <Card>
       <CardBody>
@@ -18,13 +24,6 @@ const TopCards = ({ bg, icon, earning, subtitle }) => {
       </CardBody>
     </Card>
   );
-};
-
-TopCards.propTypes = {
-  bg: PropTypes.string,
-  icon: PropTypes.string,
-  earning: PropTypes.string,
-  subtitle: PropTypes.string,
 };
 
 export default TopCards;

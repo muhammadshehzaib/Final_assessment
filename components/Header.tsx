@@ -36,7 +36,6 @@ const Header: React.FC<HeaderProps> = ({ showMobmenu }) => {
   };
 
   const handleLogout = () => {
-    // Simulate a logout action
     logout();
     router.push("signin");
   };

@@ -9,8 +9,30 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 interface CountryData {
   participants: string;
   replies_count: number;
-  published: string; // Assuming published is a string
-  // Add other properties as needed
+  published: string;
+  date: string;
+}
+interface ChartOptions {
+  series: { name: any; data: (any | any)[] }[];
+  options: {
+    chart: {
+      type: any;
+    };
+    dataLabels: {
+      enabled: any;
+    };
+    grid: {
+      strokeDashArray: any;
+      borderColor: any;
+    };
+    stroke: {
+      curve: any;
+      width: number;
+    };
+    xaxis: {
+      categories: string[];
+    };
+  };
 }
 
 const SalesChart: React.FC = () => {
@@ -19,7 +41,9 @@ const SalesChart: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3009/news");
+      const response = await fetch(
+        "http://localhost:3009/news/aggregateByDate"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch blog data");
       }
@@ -28,41 +52,28 @@ const SalesChart: React.FC = () => {
     } catch (error: any) {
       console.error(error.message);
     } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+  // console.log("countries : ", countriesData);
 
-  // Aggregate data based on months
-  const aggregatedData: Record<
-    string,
-    { participants: number; replies_count: number }
-  > = {};
-  countriesData.forEach((country) => {
-    const month = new Date(country.published).toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "2-digit",
-    });
-    if (!aggregatedData[month]) {
-      aggregatedData[month] = { participants: 0, replies_count: 0 };
-    }
-    aggregatedData[month].participants += parseFloat(country.participants);
-    aggregatedData[month].replies_count += country.replies_count;
-  });
-
-  const chartoptions = {
+  const chartoptions: ChartOptions = {
     series: [
       {
         name: "Participants Count",
-        data: Object.values(aggregatedData).map((data) => data.participants),
+        data: countriesData.map((participants) => {
+          return participants.participants;
+        }),
       },
       {
         name: "Replies Count",
-        data: Object.values(aggregatedData).map((data) => data.replies_count),
+        data: countriesData.map((replies) => {
+          return replies.replies_count;
+        }),
       },
     ],
     options: {
@@ -81,7 +92,7 @@ const SalesChart: React.FC = () => {
         width: 1,
       },
       xaxis: {
-        categories: Object.keys(aggregatedData),
+        categories: countriesData.map((date) => date.date),
       },
     },
   };

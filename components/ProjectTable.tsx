@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Image from "next/image";
 import { Card, CardBody, CardTitle, CardSubtitle, Table } from "reactstrap";
 import user1 from "../public/assets/images/users/user1.jpg";

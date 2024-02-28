@@ -7,10 +7,11 @@ import Giphy from "../public/assets/images/giphy2.gif";
 type CountryData = {
   published: string;
   author: string;
+  date: string;
 };
 
 type ChartOptions = {
-  series: { name: string; data: number[] }[];
+  series: { name: string; data: any[] }[];
   options: {
     xaxis: { categories: string[] };
   };
@@ -24,7 +25,9 @@ const SalesChart2: FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3009/news");
+      const response = await fetch(
+        "http://localhost:3009/news/author/aggregateByDate"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch blog data");
       }
@@ -34,47 +37,29 @@ const SalesChart2: FC = () => {
     } catch (error: any) {
       console.error(error.message);
     } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
+      setLoading(false);
     }
   };
+
+  // console.log("This is countries data : ", countriesData);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const authorsCountByDate = countriesData.reduce((acc, country) => {
-    const publishedDate = new Date(country.published);
-    const formattedDate = new Intl.DateTimeFormat("en", {
-      month: "short",
-      day: "numeric",
-    }).format(publishedDate);
-
-    if (!acc[formattedDate]) {
-      acc[formattedDate] = new Set<string>();
-    }
-
-    acc[formattedDate].add(country.author);
-
-    return acc;
-  }, {} as Record<string, Set<string>>);
-
-  console.log("Authors Count by Date: ", authorsCountByDate);
-
   const chartoptions: ChartOptions = {
     series: [
       {
-        name: "Authors",
-        data: Object.keys(authorsCountByDate).map(
-          (date) => authorsCountByDate[date].size
-        ),
+        name: "Participants",
+        data: countriesData.map((participants) => {
+          return participants.author;
+        }),
       },
-      // Add other series as needed
     ],
     options: {
       xaxis: {
-        categories: Object.keys(authorsCountByDate),
+        categories: countriesData.map((date) => date.date),
       },
-      // ... (your existing options)
     },
   };
 

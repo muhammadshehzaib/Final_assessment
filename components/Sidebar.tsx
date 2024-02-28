@@ -1,4 +1,3 @@
-// Use client
 "use client";
 import { Button, Nav, NavItem } from "reactstrap";
 import Logo from "./Logo";
